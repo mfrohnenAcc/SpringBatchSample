@@ -20,7 +20,7 @@ public class CandidateWriter implements ItemWriter<Candidate> {
             e.printStackTrace();
         }
         try {
-            students = new FileWriter("./results/students.txt");
+            students = new FileWriter("./results/Students.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
