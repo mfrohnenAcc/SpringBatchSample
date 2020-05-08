@@ -1,21 +1,19 @@
 package org.dualstudents.job;
 
-import org.dualstudents.model.Candidate;
-import org.dualstudents.processor.CandidateProcessor;
-import org.dualstudents.writer.CandidateWriter;
+import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 
 @Configuration
 @EnableBatchProcessing
@@ -37,43 +35,38 @@ public class JobConfiguration {
     }
 
     @Bean
-    public Step step1(FlatFileItemReader<Candidate> candidateItemReader, CandidateProcessor processor, CandidateWriter writer, DemonstrationListener demonstrationListener) {
+    public Step step1(ItemReader<Object> reader, ItemWriter<Object> writer, ItemProcessor<Object, Object> processor, ChunkListener listener) {
         int chunkSize = Integer.parseInt(System.getProperty("chunkSize"));
         return stepBuilderFactory.get("step1")
-                .<Candidate, Candidate>chunk(chunkSize)
-                .reader(candidateItemReader)
+                .<Object, Object>chunk(chunkSize)
+                .reader(reader)
                 .processor(processor)
                 .writer(writer)
-                .listener(demonstrationListener)
+                .listener(listener)
                 .build();
     }
 
     @Bean
-    public FlatFileItemReader<Candidate> reader() {
-        String inputFile = System.getProperty("inputFile");
-        return new FlatFileItemReaderBuilder<Candidate>()
-                .name("candidateItemReader")
-                .resource(new FileSystemResource(inputFile))
-                .delimited().delimiter(";")
-                .names("ID", "name", "home", "passed")
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<>() {{
-                    setTargetType(Candidate.class);
-                }})
-                .build();
+    public ItemReader<Object> reader() {
+        //TODO create reader
+        return null;
     }
 
     @Bean
-    public CandidateProcessor processor() {
-        return new CandidateProcessor();
+    public ItemProcessor<Object, Object> processor() {
+        //TODO create processor
+        return null;
     }
 
     @Bean
-    public CandidateWriter writer() {
-        return new CandidateWriter();
+    public ItemWriter<Object> writer() {
+        //TODO create writer
+        return null;
     }
 
     @Bean
-    public DemonstrationListener listener() {
-        return new DemonstrationListener();
+    public ChunkListener listener() {
+        //TODO create listener
+        return null;
     }
 }
